@@ -55,7 +55,7 @@ function Assignment_1() {
     const loader = new GLTFLoader();
     let model = null;
     loader.load(
-      "/sakura_model.glb",
+      "/three_js/sakura_model.glb",
       function (gltf) {
         model = gltf.scene;
         model.scale.set(5, 5, 5);
