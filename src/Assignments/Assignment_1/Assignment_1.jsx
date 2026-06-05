@@ -1,11 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import "./Assignment_1.css";
 import { Timer } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import Load from "../Loading/Load.jsx";
 
 function Assignment_1() {
   const mountRef = useRef(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const canvas = mountRef.current;
@@ -61,10 +63,12 @@ function Assignment_1() {
         model.scale.set(5, 5, 5);
         model.position.set(0, -1, 0);
         scene.add(model);
+        setLoading(false);
       },
       undefined,
       function (error) {
         console.error(error);
+        setLoading(false);
       }
     );
 
@@ -95,7 +99,8 @@ function Assignment_1() {
 
   return (
     <>
-      <div id="title">Cube</div>
+      {loading && <Load />}
+      <div id="title" style={{ top: "85vh"}}>Cube</div>
       <canvas ref={mountRef} style={{ display: "block" }} />
     </>
   );

@@ -1,23 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import "../Assignment_1/Assignment_1.css";
 import { Timer } from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import Load from "../Loading/Load.jsx";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-function Assignment_1() {
+function Load() {
   const mountRef = useRef(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const canvas = mountRef.current;
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
-      150,
+      75,
       window.innerWidth / window.innerHeight,
       0.1,
-      500
+      1000
     );
     const renderer = new THREE.WebGLRenderer({ canvas });
 
@@ -39,7 +36,11 @@ function Assignment_1() {
     scene.add(starGeometry);
 
     for(let i = 0; i < 1000; i++) {
-      const geometry = new THREE.SphereGeometry(0.05, 0.1, 0.05);
+      const geometry = new THREE.SphereGeometry(
+        Math.random() * 0.1 + 0.05,
+        0.1,
+        0.05
+      );
       const material = new THREE.MeshBasicMaterial({ color: 0xffffff , wireframe: true});
       const sphere = new THREE.Mesh(geometry, material);
       sphere.position.set(
@@ -57,24 +58,6 @@ function Assignment_1() {
     directionalLight.position.set(5, 10, 7.5);
     scene.add(directionalLight);
 
-    const loader = new GLTFLoader();
-    let model = null;
-    loader.load(
-      "/three_js/sakura_model.glb",
-      function (gltf) {
-        model = gltf.scene;
-        model.scale.set(22, 22, 22);
-        model.position.set(0, -6, 0);
-        scene.add(model);
-        setLoading(false);
-      },
-      undefined,
-      function (error) {
-        console.error(error);
-        setLoading(false);
-      }
-    );
-
     camera.position.z = 5;
     const timer = new Timer();
 
@@ -82,11 +65,8 @@ function Assignment_1() {
       timer.update(timeStamp);
       const delta = timer.getDelta();
 
-      if (model) {
-        model.rotation.y += delta/10;
-      }
-
       starGeometry.rotation.y += delta/20;
+      starGeometry.position.x += delta/40;
 
       controls.update();
       renderer.render(scene, camera);
@@ -102,12 +82,10 @@ function Assignment_1() {
 
   return (
     <>
-    {loading && <Load />}
-
-      <div id="title" style={{ top: "85vh"}}>Sakura</div>
+      <div id="title" style={{ top: "50vh"}}>Loading...</div>
       <canvas ref={mountRef} style={{ display: "block" }} />
     </>
   );
 }
 
-export default Assignment_1;
+export default Load;
