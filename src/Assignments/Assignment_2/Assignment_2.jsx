@@ -17,7 +17,7 @@ function Assignment_1() {
       150,
       window.innerWidth / window.innerHeight,
       0.1,
-      500
+      1000
     );
     const renderer = new THREE.WebGLRenderer({ canvas });
 

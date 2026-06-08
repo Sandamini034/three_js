@@ -9,6 +9,7 @@ function Home() {
         <h1>Three.js Assignments</h1>
         <Link to="/ASG-01">Assignment-01</Link>
         <Link to="/ASG-02">Assignment-02</Link>
+        <Link to="/ASG-03">Assignment-03</Link>
       </nav>
     </div>
   );
