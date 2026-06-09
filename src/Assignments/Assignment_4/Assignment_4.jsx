@@ -1,11 +1,13 @@
 import * as THREE from "three";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Timer } from "three";
+import Load from "../Loading/Load.jsx";
 
 function Assignment_4() {
   const canvasRef = useRef(null);
+  const [loading, setLoading] = useState(true);
   let angle = 60;
 
   useEffect(() => {
@@ -39,6 +41,7 @@ function Assignment_4() {
         model.scale.set(0.01, 0.01, 0.01);
         model.position.set(0, -3, 0);
         scene.add(model);
+        setLoading(false);
 
         if (gltf.animations && gltf.animations.length > 0) {
           const mixer = new THREE.AnimationMixer(model);
@@ -67,6 +70,7 @@ function Assignment_4() {
       undefined,
       (error) => {
         console.error(error);
+        setLoading(false);
       }
     );
 
@@ -102,10 +106,12 @@ function Assignment_4() {
         model.scale.set(25, 25, 25);
         model.position.set(0, -5, 0);
         scene.add(model);
+        setLoading(false);
       },
       undefined,
       (error) => {
         console.error(error);
+        setLoading(false);
       }
     );
 
@@ -131,10 +137,12 @@ function Assignment_4() {
     };
   }, []);
   return (
+    <>
+    {loading && <Load />}
     <canvas
       ref={canvasRef}
-      style={{ display: "block", width: "100%", height: "100%" }}
-    ></canvas>
+      style={{ display: "block", width: "100%", height: "100%" }} />
+    </>
   );
 }
 
