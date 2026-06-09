@@ -2,26 +2,25 @@ import * as THREE from "three";
 import { useRef, useEffect, useState } from "react";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Timer } from "three";
 import Load from "../Loading/Load.jsx";
 
 function Assignment_4() {
   const canvasRef = useRef(null);
   const [loading, setLoading] = useState(true);
-  let angle = 60;
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    //const axesHelper = new THREE.AxesHelper(5);
     const scene = new THREE.Scene();
-    //scene.add(axesHelper);
 
     const camera = new THREE.PerspectiveCamera(
-      angle,
+      60,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
     );
+    camera.position.set(20, 20, 20);
+    camera.lookAt(0, 0, 0);
+
     const renderer = new THREE.WebGLRenderer({ canvas });
     renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -30,52 +29,13 @@ function Assignment_4() {
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     };
-
     window.addEventListener("resize", resize);
 
-    const loader = new GLTFLoader();
-    loader.load(
-      "/three_js/phoenix_bird.glb",
-      (gltf) => {
-        const model = gltf.scene;
-        model.scale.set(0.01, 0.01, 0.01);
-        model.position.set(0, -3, 0);
-        scene.add(model);
-        setLoading(false);
-
-        if (gltf.animations && gltf.animations.length > 0) {
-          const mixer = new THREE.AnimationMixer(model);
-          mixer.clipAction(gltf.animations[0]).play();
-
-          const timer = new Timer();
-          const animate = (timeStamp) => {
-            timer.update(timeStamp);
-            const delta = timer.getDelta();
-            angle += delta / 2;
-
-            const radius = 15;
-
-            camera.position.x = Math.cos(angle) + 20;
-            camera.position.z = Math.sin(angle) + 5;
-
-            model.position.x = Math.cos(angle) * radius;
-            model.position.z = Math.sin(angle) * radius;
-
-            mixer.update(delta);
-            renderer.render(scene, camera);
-          };
-          renderer.setAnimationLoop(animate);
-        }
-      },
-      undefined,
-      (error) => {
-        console.error(error);
-        setLoading(false);
-      }
-    );
+    const group = new THREE.Group();
+    scene.add(group);
 
     for (let i = 0; i < 1000; i++) {
-      const geometry = new THREE.SphereGeometry(0.1, 16, 16);
+      const geometry = new THREE.SphereGeometry(0.1, 8, 8);
       const material = new THREE.MeshStandardMaterial({
         color: 0xffffff,
         wireframe: true,
@@ -99,24 +59,8 @@ function Assignment_4() {
     flat.position.y = -5;
     scene.add(flat);
 
-    loader.load(
-      "/three_js/sakura_model.glb",
-      (gltf) => {
-        const model = gltf.scene;
-        model.scale.set(25, 25, 25);
-        model.position.set(0, -5, 0);
-        scene.add(model);
-        setLoading(false);
-      },
-      undefined,
-      (error) => {
-        console.error(error);
-        setLoading(false);
-      }
-    );
-
     const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1);
-    hemisphereLight.position.set(0, 20, 0);
+    hemisphereLight.position.set(0, 50, 0);
     scene.add(hemisphereLight);
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
@@ -124,24 +68,100 @@ function Assignment_4() {
     scene.add(directionalLight);
 
     const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 0, 0);
+    controls.update();
 
-    camera.position.set(50, 0, 10);
-    camera.lookAt(0, 0, 0);
-    const animate = () => {
+    const state = {
+      angle: 0,
+      mixer: null,
+      bird: null,
+    };
+    const RADIUS = 10;
+    const BIRD_HEIGHT = 2;
+    const SPEED = 0.5;
+
+    const loader = new GLTFLoader();
+
+    loader.load(
+      "/three_js/sakura_model.glb",
+      (gltf) => {
+        const model = gltf.scene;
+        model.scale.set(25, 25, 25);
+        model.position.set(0, -5, 0);
+        group.add(model);
+        setLoading(false);
+      },
+      undefined,
+      (error) => {
+        console.error("Sakura load error:", error);
+        setLoading(false);
+      }
+    );
+
+    loader.load(
+      "/three_js/phoenix_bird.glb",
+      (gltf) => {
+        const model = gltf.scene;
+        model.scale.set(0.01, 0.01, 0.01);
+        group.add(model);
+        state.bird = model;
+
+        if (gltf.animations && gltf.animations.length > 0) {
+          state.mixer = new THREE.AnimationMixer(model);
+          state.mixer.clipAction(gltf.animations[0]).play();
+        }
+
+        setLoading(false);
+      },
+      undefined,
+      (error) => {
+        console.error("Bird load error:", error);
+        setLoading(false);
+      }
+    );
+
+    let lastTime = null;
+
+    const animate = (timeStamp) => {
+      const delta = lastTime !== null ? (timeStamp - lastTime) / 1000 : 0;
+      lastTime = timeStamp;
+
+      state.angle += SPEED * delta;
+
+      if (state.bird) {
+        const x = Math.cos(state.angle) * RADIUS;
+        const z = Math.sin(state.angle) * RADIUS;
+        state.bird.position.set(x, BIRD_HEIGHT, z);
+
+        // Face direction of travel
+        const tangentAngle = state.angle + Math.PI / 2;
+        state.bird.rotation.y = -tangentAngle;
+      }
+
+      if (state.mixer) {
+        state.mixer.update(delta);
+      }
+
+      controls.update();
       renderer.render(scene, camera);
     };
+
     renderer.setAnimationLoop(animate);
 
     return () => {
+      window.removeEventListener("resize", resize);
+      renderer.setAnimationLoop(null);
       renderer.dispose();
     };
   }, []);
+
   return (
     <>
-    {loading && <Load />}
-    <canvas
-      ref={canvasRef}
-      style={{ display: "block", width: "100%", height: "100%" }} />
+      {loading && <Load />}
+      <canvas
+        ref={canvasRef}
+        style={{ display: "block", width: "100%", height: "100%" }}
+      />
     </>
   );
 }
