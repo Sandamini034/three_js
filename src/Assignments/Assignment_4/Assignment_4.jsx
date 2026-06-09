@@ -128,6 +128,8 @@ function Assignment_4() {
 
       state.angle += SPEED * delta;
 
+      camera.position.x = Math.cos(state.angle) * RADIUS;
+
       if (state.bird) {
         const x = Math.cos(state.angle) * RADIUS;
         const z = Math.sin(state.angle) * RADIUS;
