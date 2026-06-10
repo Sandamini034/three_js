@@ -14,6 +14,7 @@ function lerpAngle(a, b, t) {
 function Assignment_6() {
   const canvasRef = useRef(null);
   const [load, setLoad] = useState(true);
+  const [loadTexture, setLoadTexture] = useState(true);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -86,6 +87,9 @@ function Assignment_6() {
     //enables horizontal repeat
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
+    if(texture){
+      setLoadTexture(false);
+    }
 
     const planeMaterial = new THREE.MeshStandardMaterial({ map: texture });
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);
@@ -234,7 +238,7 @@ function Assignment_6() {
 
   return (
     <>
-      {load && <Load />}
+      {(load || loadTexture) && <Load />}
       <canvas ref={canvasRef} id="canvas" />
     </>
   );
