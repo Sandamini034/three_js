@@ -89,7 +89,7 @@ function Assignment_5() {
       if (mixer) mixer.update(delta);
 
       if (model && hasTarget) {
-        model.position.lerp(targetPosition, 0.05);
+        model.position.lerp(targetPosition, 0.04);
 
         const direction = new THREE.Vector3()
           .subVectors(targetPosition, model.position)

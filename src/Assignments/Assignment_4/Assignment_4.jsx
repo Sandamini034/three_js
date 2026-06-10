@@ -122,7 +122,7 @@ function Assignment_4() {
 
     let lastTime = null;
 
-    const animate = (timeStamp) => {
+     const animate = (timeStamp) => {
       const delta = lastTime !== null ? (timeStamp - lastTime) / 1000 : 0;
       lastTime = timeStamp;
 
