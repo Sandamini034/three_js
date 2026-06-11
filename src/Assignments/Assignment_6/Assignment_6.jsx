@@ -194,22 +194,18 @@ function Assignment_6() {
         if (keyPressed.KeyW) {
           state.model.position.z -= moveDistance;
           state.targetAngle = -Math.PI;
-          camera.position.x -=moveDistance;
         }
         if (keyPressed.KeyS) {
           state.model.position.z += moveDistance;
-          camera.position.x+=moveDistance;
           state.targetAngle = 0;
         }
         if (keyPressed.KeyA) {
           state.model.position.x -= moveDistance;
           state.targetAngle = -Math.PI / 2;
-          camera.position.z -=moveDistance;
         }
         if (keyPressed.KeyD) {
           state.model.position.x += moveDistance;
           state.targetAngle = Math.PI / 2;
-          camera.position.z +=moveDistance;
         }
 
         if (state.model.position.length() > 47) {
