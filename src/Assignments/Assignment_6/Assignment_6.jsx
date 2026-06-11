@@ -20,7 +20,7 @@ function Assignment_6() {
     const canvas = canvasRef.current;
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x87ceeb);
-    scene.fog = new THREE.Fog(0x87ceeb, 20, 50);
+    //scene.fog = new THREE.Fog(0x87ceeb, 40, 50);
     const camera = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
@@ -194,18 +194,22 @@ function Assignment_6() {
         if (keyPressed.KeyW) {
           state.model.position.z -= moveDistance;
           state.targetAngle = -Math.PI;
+          camera.position.x -=moveDistance;
         }
         if (keyPressed.KeyS) {
           state.model.position.z += moveDistance;
+          camera.position.x+=moveDistance;
           state.targetAngle = 0;
         }
         if (keyPressed.KeyA) {
           state.model.position.x -= moveDistance;
           state.targetAngle = -Math.PI / 2;
+          camera.position.z -=moveDistance;
         }
         if (keyPressed.KeyD) {
           state.model.position.x += moveDistance;
           state.targetAngle = Math.PI / 2;
+          camera.position.z +=moveDistance;
         }
 
         if (state.model.position.length() > 47) {
@@ -216,6 +220,12 @@ function Assignment_6() {
           state.targetAngle,
           0.15
         );
+
+        camera.rotation.y = lerpAngle(
+          camera.rotation.y,
+          camera.targetAngle,
+          0.15
+        )
       }
 
       if (state.mixer) state.mixer.update(delta);
