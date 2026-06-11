@@ -27,7 +27,7 @@ function Assignment_6() {
       0.1,
       1000
     );
-    camera.position.set(5, 5, 10);
+    camera.position.set(5, 5, 5);
     camera.lookAt(0, 0, 0);
     scene.add(camera);
 
@@ -91,7 +91,7 @@ function Assignment_6() {
       setLoadTexture(false);
     }
 
-    const planeMaterial = new THREE.MeshStandardMaterial({ map: texture });
+    const planeMaterial = new THREE.MeshStandardMaterial({ map: texture});
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.rotation.x = -Math.PI / 2;
     plane.position.y = -3;
@@ -128,7 +128,7 @@ function Assignment_6() {
       (gltf) => {
         const model = gltf.scene;
         model.position.set(0, -3, 0);
-        model.scale.set(8, 8, 8);
+        model.scale.set(5, 5, 5);
         scene.add(model);
         setLoad(false);
 
@@ -194,17 +194,21 @@ function Assignment_6() {
         if (keyPressed.KeyW) {
           state.model.position.z -= moveDistance;
           state.targetAngle = -Math.PI;
+          camera.position.z -=moveDistance;
         }
         if (keyPressed.KeyS) {
           state.model.position.z += moveDistance;
           state.targetAngle = 0;
+          camera.position.z +=moveDistance;
         }
         if (keyPressed.KeyA) {
           state.model.position.x -= moveDistance;
           state.targetAngle = -Math.PI / 2;
+          camera.position.x -=moveDistance;
         }
         if (keyPressed.KeyD) {
           state.model.position.x += moveDistance;
+          camera.position.x +=moveDistance;
           state.targetAngle = Math.PI / 2;
         }
 
@@ -217,15 +221,11 @@ function Assignment_6() {
           0.15
         );
 
-        camera.rotation.y = lerpAngle(
-          camera.rotation.y,
-          camera.targetAngle,
-          0.15
-        )
+       
+        camera.lookAt(state.model.position);
       }
 
       if (state.mixer) state.mixer.update(delta);
-      orbitControls.update();
       renderer.render(scene, camera);
     };
 
