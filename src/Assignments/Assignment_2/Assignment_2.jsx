@@ -57,6 +57,7 @@ function Assignment_1() {
     directionalLight.position.set(5, 10, 7.5);
     scene.add(directionalLight);
 
+    // Load the GLTF model
     const loader = new GLTFLoader();
     let model = null;
     loader.load(
