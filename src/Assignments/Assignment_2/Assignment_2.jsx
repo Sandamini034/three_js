@@ -103,8 +103,6 @@ function Assignment_1() {
   return (
     <>
     {loading && <Load />}
-
-      <div id="title" style={{ top: "85vh"}}>Sakura</div>
       <canvas ref={mountRef} style={{ display: "block" }} />
     </>
   );

@@ -57,11 +57,11 @@ function Assignment_1() {
     const loader = new GLTFLoader();
     let model = null;
     loader.load(
-      "/three_js/sakura_model.glb",
+      "/three_js/mask_man.glb",
       function (gltf) {
         model = gltf.scene;
-        model.scale.set(5, 5, 5);
-        model.position.set(0, -1, 0);
+        model.scale.set(0.4, 0.4, 0.4);
+        model.position.set(0, 0, 0);
         scene.add(model);
         setLoading(false);
       },
